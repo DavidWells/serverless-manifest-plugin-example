@@ -1,0 +1,41 @@
+service: backend
+
+custom:
+  manifest:
+    postProcess: ./processManifest.js
+    disableOutput: true
+
+plugins:
+ - serverless-manifest-plugin
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: users/create
+          method: get
+
+resources:
+  # Stack resources
+  Resources:
+    myDynamoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: my-table-name
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+  # Stack outputs
+  Outputs:
+    NewOutput:
+      Description: "Description for the output"
+      Value: "Some output value"
